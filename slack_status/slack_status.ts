@@ -35,21 +35,25 @@ async function getSlackStatus(): Promise<SlackStatus> {
 }
 
 class SlackStatus {
-  status: string;
-  incidents: Incident[];
+  private _status: string;
+  private _incidents: Incident[];
 
   constructor(status: string, incidents: Incident[]) {
-    this.status = status;
-    this.incidents = incidents;
+    this._status = status;
+    this._incidents = incidents;
   }
 
   ok(): boolean {
-    return this.status === "ok";
+    return this._status === "ok";
+  }
+
+  incidents(): Incident[] {
+    return this._incidents;
   }
 }
 
 class Incident {
-  _description: string;
+  private _description: string;
 
   constructor(description: string) {
     this._description = description;
@@ -69,7 +73,7 @@ function bitbarMessageHeader(slackStatus: SlackStatus): string {
 }
 
 function bitbarMessage(slackStatus: SlackStatus): string {
-  const incident_messages = slackStatus.incidents.map((incident) =>
+  const incident_messages = slackStatus.incidents().map((incident) =>
     incident.description()
   ).join("\n");
   return bitbarMessageHeader(slackStatus) + "\n" + "---" + "\n" +
