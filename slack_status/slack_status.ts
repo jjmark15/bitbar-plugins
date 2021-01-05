@@ -70,6 +70,10 @@ class Incident {
   }
 }
 
+function statusPageLink(): string {
+  return "Status Page | href=https://status.slack.com/";
+}
+
 function bitbarMessageHeader(slackStatus: SlackStatus): string {
   if (slackStatus.ok()) {
     return "✓ | font='PilGi Regular' image=" + BLACK_SLACK_ICON_BASE64;
@@ -82,8 +86,8 @@ function bitbarMessage(slackStatus: SlackStatus): string {
   const incident_messages = slackStatus.incidents().map((incident) =>
     incident.description() + " | href=" + incident.url()
   ).join("\n");
-  return bitbarMessageHeader(slackStatus) + "\n" + "---" + "\n" +
-    incident_messages;
+  return bitbarMessageHeader(slackStatus) + "\n---\n" + statusPageLink() +
+    "\n---\n" + incident_messages;
 }
 
 main();
