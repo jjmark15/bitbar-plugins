@@ -27,7 +27,7 @@ async function getSlackStatus(): Promise<SlackStatus> {
   const status = json["status"];
   const incidents: Incident[] = json["active_incidents"].map(
     (incident_json: { [x: string]: string }) => {
-      return new Incident(incident_json["title"]);
+      return new Incident(incident_json["title"], incident_json["url"]);
     },
   );
 
@@ -54,13 +54,19 @@ class SlackStatus {
 
 class Incident {
   private _description: string;
+  private _url: string;
 
-  constructor(description: string) {
+  constructor(description: string, url: string) {
     this._description = description;
+    this._url = url;
   }
 
   description(): string {
     return this._description;
+  }
+
+  url(): string {
+    return this._url;
   }
 }
 
@@ -74,7 +80,7 @@ function bitbarMessageHeader(slackStatus: SlackStatus): string {
 
 function bitbarMessage(slackStatus: SlackStatus): string {
   const incident_messages = slackStatus.incidents().map((incident) =>
-    incident.description()
+    incident.description() + " | href=" + incident.url()
   ).join("\n");
   return bitbarMessageHeader(slackStatus) + "\n" + "---" + "\n" +
     incident_messages;
